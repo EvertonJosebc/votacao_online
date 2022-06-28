@@ -1,0 +1,171 @@
+{% extends "base_eleicao.html" %}
+
+{% load static %}
+
+{% block links %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/menu.css' %}">
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="d-flex justify-content-around" style="margin-top: 20px; margin-bottom: 20px; ">
+
+        <div class="row"
+             style="width: 60%; box-shadow: 0px 10px 16px rgba(0, 0, 0, 0.1); border-radius: 16px; padding-bottom: 25px;">
+
+
+            <p class="m-1"
+               style="font-size: 25px; text-align: center">Pleito: {{ titulo }}</p>
+            <p class="m-1"
+               style="font-size: 20px; text-align: center">Vencedor: {{ vencedor }}</p>
+
+            <div class="col-6">
+
+                <div class="d-flex justify-content-center">
+                    <div class="carteira-card" style="width: 300px;">
+
+                        <div id="chart" style="width:100%; height:200px; border-radius: 16px">
+
+                        </div>
+
+                        {% for key, value in dados_coloridos.items %}
+                            <div class="row" style="justify-content: center">
+                                <div class="col-9">
+                                    <span>{{ key }}</span>
+                                </div>
+                                <div class="col-2">
+                                    <div style="background-color: {{ value }}; border-radius: 8px; height: 16px; width: 16px"></div>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-6">
+
+                <div id="container" style="height: 300px;"></div>
+
+            </div>
+
+
+            <table style="margin: auto; width: 40%;">
+
+                <tr>
+                    <th>Candidato</th>
+                    <th>Total de Votos</th>
+                </tr>
+
+                {% for candidato, votos in candidatos.items %}
+                    <tr>
+                        <td>{{ candidato }}</td>
+                        <td>{{ votos }}</td>
+                    </tr>
+                {% endfor %}
+
+
+            </table>
+
+
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block javascript %}
+
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script>
+        const cores = "{{ cores }}".replaceAll(", ", "").split("&#x27;")
+
+        for (let i = 0; i < cores.length; i = i + 1) {
+            if (cores[i] === "" || cores[i] === "[" || cores[i] === "]") {
+                cores.splice(i, 1);
+            }
+        }
+
+        Highcharts.setOptions({
+            // colors: ["(220, 168, 47)"]
+            colors: cores
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            var chart1 = new Highcharts.Chart({
+                chart: {
+                    type: 'pie',
+                    renderTo: 'chart'
+                },
+
+                credits: {
+                    enabled: false
+                },
+
+                title: {
+                    enabled: false,
+                    verticalAlign: 'middle',
+                    floating: true,
+                    text: ''
+                },
+
+                plotOptions: {
+                    pie: {
+                        innerSize: '80%'
+                    },
+                    series: {
+                        enableMouseTracking: false,
+                    },
+                },
+                slicedOffset: 0,
+
+                series: [{
+                    name: "",
+                    data: {{ dados }},
+                    dataLabels: {
+                        enabled: false,
+                        connectorWidth: 0,
+                        connectorPadding: -10
+                    },
+                }]
+            });
+        });
+
+        Highcharts.chart('container', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: ''
+            },
+            legend: {enabled: false},
+            credits: {
+                enabled: false
+            },
+            plotOptions: {
+                series: {
+                    enableMouseTracking: false,
+                },
+            },
+            series: [
+                {% for entry in dados %}
+                    {
+                        data: [{{ entry }}]
+                    }
+
+                    {% if not forloop.last %}
+                        ,
+                        {{ else }}
+                    {% endif %}
+                {% endfor %}
+            ]
+        });
+
+
+    </script>
+
+
+{% endblock %}

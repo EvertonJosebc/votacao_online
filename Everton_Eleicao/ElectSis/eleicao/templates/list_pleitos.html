@@ -1,0 +1,125 @@
+{% extends 'base_eleicao.html' %}
+
+{% load static %}
+
+{% block links %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/menu.css' %}">
+
+{% endblock %}
+
+{% block content %}
+
+    {% if cadastradas %}
+
+        <div class="d-flex  justify-content-center m-2" style="width: 100%; margin: 30px auto;">
+
+            <div class="row" style="width: 70%;">
+
+                <label style="width: 100%; text-align: center">Cadastradas</label> <br>
+                <table style="text-align: center; margin-bottom: 15px;">
+                    <tr>
+
+                        <th>Nome</th>
+                        <th>Data de inicio</th>
+                        <th>Data de término</th>
+
+                    </tr>
+                    <tr>
+                        {% for eleicao in cadastradas %}
+
+
+                            <td>{{ eleicao.nome }}</td>
+                            <td>{{ eleicao.data_inicial }}</td>
+                            <td>{{ eleicao.data_final }}</td>
+
+
+                        {% endfor %}
+
+                    </tr>
+                </table>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+    {% if andamento %}
+
+        <div class="d-flex  justify-content-center m-2" style="width: 100%; margin-top: 30px">
+
+            <div class="row" style="width: 70%;">
+                <label style="width: 100%; text-align: center">Em Andamento</label> <br>
+                {% for eleicao in andamento %}
+                    <table style="text-align: center; margin-bottom: 15px;">
+                        <tr>
+
+                            <th>Nome</th>
+                            <th>Data de inicio</th>
+                            <th>Data de término</th>
+                            <th>Ações</th>
+
+                        </tr>
+                        <tr>
+
+
+                            <td>{{ eleicao.nome }}</td>
+                            <td>{{ eleicao.data_inicial }}</td>
+                            <td>{{ eleicao.data_final }}</td>
+                            <td><a href="{% url 'votar' eleicao.pk %}" class="btn btn-secondary"><span
+                                    style="vertical-align: top;">Votar</span><span
+                                    class="material-icons" style="margin-left: 10px;">&#xe175;</span></a></td>
+
+
+                        </tr>
+                    </table>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+    {% if finalizadas %}
+
+        <div class="d-flex justify-content-center m-2" style="width: 100%; margin-top: 30px">
+
+            <div style="width: 70%;">
+
+                <label style="width: 100%; text-align: center; margin-bottom: 1.5rem;">Finalizadas</label> <br>
+                <table style="text-align: center; margin-bottom: 15px;">
+                    <div class="row" style="width: 70%;">
+
+                            <tr>
+
+                                <th>Nome</th>
+                                <th>Data de inicio</th>
+                                <th>Data de término</th>
+                                <th>Ações</th>
+
+                            </tr>
+                    </div>
+                    <div class="row" style="width: 70%;">
+                        <tr>
+                            {% for eleicao in finalizadas %}
+
+                                <td>{{ eleicao.nome }}</td>
+                                <td>{{ eleicao.data_inicial }}</td>
+                                <td>{{ eleicao.data_final }}</td>
+                                <td><a href="{% url 'resultado' eleicao.pk %}" class="btn btn-secondary"><span
+                                        style="vertical-align: top;">Resultado</span><span
+                                        class="material-icons" style="margin-left: 10px;">&#xf20c;</span></a></td>
+
+                            {%endfor %}
+                        </tr>
+                    </div>
+                </table>
+            </div>
+        </div>
+
+    {% endif %}
+
+{% endblock %}
